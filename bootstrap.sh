@@ -39,12 +39,12 @@ apt-get upgrade -y
 
 echo "cleaning logs and all ..."
 apt-get clean
-rm -rf /tmp/*
-rm -f /var/log/wtmp /var/log/btmp
+rm -frv /tmp/*
+rm -frv /var/log/wtmp /var/log/btmp
 
 echo "reducing size of vm ..."
 dd if=/dev/zero of=/EMPTY bs=1M
-rm -f /EMPTY
+rm -frv /EMPTY
 
 echo "clearing command history ..."
 history -c
