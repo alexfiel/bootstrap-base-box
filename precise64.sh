@@ -4,8 +4,19 @@ echo "updating repos ..."
 apt-get update
 
 echo "installing required tools ..."
-apt-get install -y git curl
+apt-get install -y git curl debconf-utils
 
+echo "setting grub parameters ..."
+echo "grub-pc grub-pc/kopt_extracted boolean true" | debconf-set-selections
+echo "grub-pc grub2/linux_cmdline string" | debconf-set-selections
+echo "grub-pc grub-pc/install_devices multiselect /dev/sda" | debconf-set-selections
+echo "grub-pc grub-pc/install_devices_failed_upgrade boolean true" | debconf-set-selections
+echo "grub-pc grub-pc/install_devices_disks_changed multiselect /dev/sda" | debconf-set-selections
+
+echo "fixing vagrant grub parameter ..."
+dpkg-reconfigure -f noninteractive grub-pc
+
+echo "setting sudoers file ..."
 echo "setting vagrant sudoers file"
 echo "vagrant ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
@@ -38,6 +49,7 @@ echo "upgrading binaries ..."
 apt-get upgrade -y
 
 echo "cleaning logs and all ..."
+apt-get autoremove -y
 apt-get clean
 rm -frv /tmp/*
 rm -frv /var/log/wtmp /var/log/btmp
